@@ -29,3 +29,9 @@
                          (tactics t)
                          (state state))
   context)
+
+(defmethod serialize ((context simple-context))
+  "meaningless ;p")
+
+(defmethod deserialize ((policy simple-policy) (string string))
+  (make-context policy))

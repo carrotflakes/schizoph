@@ -6,6 +6,8 @@
            :make-context
            :think
            :next-context
+           :serialize
+           :deserialize
            :state))
 (in-package :schizoph.policy)
 
@@ -19,3 +21,7 @@
 (defgeneric think (policy intent state))
 
 (defgeneric next-context (policy context tactics state))
+
+(defgeneric serialize (context))
+
+(defgeneric deserialize (policy string))
