@@ -6,10 +6,14 @@
 (in-package :schizoph.simple-understander)
 
 (defclass simple-understander (understander)
-  ())
+  ((pairs :initarg :pairs)))
 
-(defun make-simple-understander ()
-  (make-instance 'simple-understander))
+(defun make-simple-understander (pairs)
+  (make-instance 'simple-understander
+                 :pairs pairs))
 
 (defmethod understand ((understander simple-understander) (input t) (state state))
-  '((hoge 1)))
+  (loop
+    for (text intent) in (slot-value understander 'pairs)
+    when (string= text input)
+    collect (list intent 1)))

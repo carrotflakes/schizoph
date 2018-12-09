@@ -10,8 +10,16 @@
 
 (plan nil)
 
-(defvar understander (make-simple-understander))
-(defvar policy (make-simple-policy))
+(defvar understander
+  (make-simple-understander
+   '(("hello" hello)
+     ("goodbye" goodbye))))
+
+(defvar policy
+  (make-simple-policy
+   '((hello hello)
+     (goodbye goodbye))))
+
 (defvar representer
   (lambda (tactics state)
     (declare (ignore state))
@@ -25,10 +33,15 @@
 
 (defvar context (make-context policy))
 
-(multiple-value-bind
-      (response next-context state)
-    (respond persona "hello" context)
-    (declare (ignore next-context state))
-  (format t "~a~%" response))
+(defun chat (text)
+  (multiple-value-bind
+        (response next-context state)
+      (respond persona text context)
+    (declare (ignore state))
+    (format t "~a~%" response)
+    (setf context next-context)))
+
+(chat "hello")
+(chat "goodbye")
 
 (finalize)
