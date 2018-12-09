@@ -15,7 +15,7 @@
            :state-next-context
            :interpret
            :plan
-           :apply-tactics))A
+           :apply-tactics))
 (in-package :schizoph.state)
 
 (defstruct state

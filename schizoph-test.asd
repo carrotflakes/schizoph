@@ -4,7 +4,7 @@
 
 (defsystem "schizoph-test"
   :defsystem-depends-on ("prove-asdf")
-  :author ""
+  :author "carrotflakes"
   :license "LLGPL"
   :depends-on ("schizoph"
                "prove")

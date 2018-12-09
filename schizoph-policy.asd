@@ -2,18 +2,16 @@
   This file is a part of schizoph project.
 |#
 
-(defsystem "schizoph"
+(defsystem "schizoph-policy"
   :version "0.1.0"
   :author "carrotflakes"
   :license "LLGPL"
   :depends-on ()
   :components ((:module "src"
                 :components
-                ((:file "schizoph" :depends-on ("state"))
+                ((:file "policy" :depends-on ("state"))
                  (:file "state" :depends-on ("persona"))
                  (:file "persona"))))
-  :description "*Vessel of the soul*"
-  :long-description
-  #.(read-file-string
-     (subpathname *load-pathname* "README.markdown"))
-  :in-order-to ((test-op (test-op "schizoph-test"))))
+  :description "policy superclass"
+  ;:in-order-to ((test-op (test-op "schizoph-test")))
+  )

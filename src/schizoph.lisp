@@ -1,6 +1,5 @@
 (defpackage schizoph
   (:use :cl
-        :schizoph.persona
         :schizoph.state)
   (:export :make-persona
            :respond))
