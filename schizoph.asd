@@ -9,8 +9,10 @@
   :depends-on ()
   :components ((:module "src"
                 :components
-                ((:file "schizoph" :depends-on ("state"))
-                 (:file "state" :depends-on ("persona"))
+                ((:file "schizoph" :depends-on ("persona" "state"  "understander" "policy"))
+                 (:file "understander" :depends-on ("state"))
+                 (:file "policy" :depends-on ("state"))
+                 (:file "state")
                  (:file "persona"))))
   :description "*Vessel of the soul*"
   :long-description

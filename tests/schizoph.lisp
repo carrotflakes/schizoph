@@ -1,6 +1,8 @@
 (defpackage schizoph-test
   (:use :cl
         :schizoph
+        :schizoph.simple-understander
+        :schizoph.simple-policy
         :prove))
 (in-package :schizoph-test)
 
@@ -8,6 +10,25 @@
 
 (plan nil)
 
-;; blah blah blah.
+(defvar understander (make-simple-understander))
+(defvar policy (make-simple-policy))
+(defvar representer
+  (lambda (tactics state)
+    (declare (ignore state))
+    (write-to-string tactics)))
+
+(defvar persona
+  (make-persona
+   :understander understander
+   :policy policy
+   :representer representer))
+
+(defvar context (make-context policy))
+
+(multiple-value-bind
+      (response next-context state)
+    (respond persona "hello" context)
+    (declare (ignore next-context state))
+  (format t "~a~%" response))
 
 (finalize)

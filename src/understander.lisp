@@ -2,9 +2,11 @@
   (:use :cl
         :schizoph.state)
   (:export :understander
-           :understand))
+           :understand
+           :state))
 (in-package :schizoph.understander)
 
-(defclass understander ())
+(defclass understander ()
+  ())
 
-(defgeneric understand (understander t state))
+(defgeneric understand (understander input state))

@@ -5,14 +5,17 @@
            :context
            :make-context
            :think
-           :next-context))
+           :next-context
+           :state))
 (in-package :schizoph.policy)
 
-(defclass policy ())
-(defclass context ())
+(defclass policy ()
+  ())
+(defclass context ()
+  ())
 
 (defgeneric make-context (policy))
 
-(defgeneric think (policy t state))
+(defgeneric think (policy intent state))
 
-(defgeneric next-context (policy t context state))
+(defgeneric next-context (policy context tactics state))

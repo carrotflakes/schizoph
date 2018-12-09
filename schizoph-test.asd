@@ -7,6 +7,8 @@
   :author "carrotflakes"
   :license "LLGPL"
   :depends-on ("schizoph"
+               "schizoph-simple-understander"
+               "schizoph-simple-policy"
                "prove")
   :components ((:module "tests"
                 :components
