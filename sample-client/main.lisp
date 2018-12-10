@@ -4,10 +4,16 @@
 (in-package :schizoph.sample-client)
 
 
+(defparameter +static-path+
+  (merge-pathnames "sample-client/static/"
+                   (asdf:system-source-directory 'schizoph-sample-client)))
+
 (defvar *app* (make-instance 'ningle:<app>))
 
 (setf (ningle:route *app* "/" :method :GET :accept "text/html")
-      "hello")
+      #'(lambda (env)
+          (setf (getf env :path-info) "/index.html")
+          (funcall (lack.app.file:make-app :root +static-path+) env)))
 
 (setf (ningle:route *app* "/chat" :method :POST)
       #'(lambda (params)
@@ -21,15 +27,5 @@
                                   :|context| ,next-context)))
                 (jojo:to-json `(:|state| "ng"
                                 :|error| "text parameter is required!"))))))
-
-(defparameter +static-path+
-  (merge-pathnames "sample-client/static/"
-                   (asdf:system-source-directory 'schizoph-sample-client)))
-
-(setf *app*
-      (funcall lack.middleware.static:*lack-middleware-static*
-               (lack.component:to-app *app*)
-               :path "/static/"
-               :root +static-path+))
 
 (clack:clackup *app*)
