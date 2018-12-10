@@ -9,9 +9,13 @@
   (:import-from :schizoph.understander
                 :understand)
   (:import-from :schizoph.policy
-                :think)
+                :think
+                :serialize
+                :deserialize)
   (:export :make-persona
-           :respond))
+           :respond
+           :serialize
+           :deserialize))
 (in-package :schizoph)
 
 
@@ -31,10 +35,19 @@
               append (loop
                        for (tactics score-2) in tactics-score-list
                        collect (list intent tactics (* score-1 score-2)))))
+
+      (setf intent-tactics-score-list
+            (append intent-tactics-score-list
+                    (loop
+                       for (tactics score) in (think policy :after state)
+                       collect (list :after tactics score))))
+
       (setf intent-tactics-score-list
             (sort intent-tactics-score-list #'> :key #'third))
+      
+      (when (null intent-tactics-score-list)
+        (error "No tactics"))
 
-      ; TODO: metacognition
       (setf (state-tactics state)
             (cadar intent-tactics-score-list)))))
 

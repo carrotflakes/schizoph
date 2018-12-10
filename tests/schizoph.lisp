@@ -18,7 +18,8 @@
 (defvar policy
   (make-simple-policy
    '((hello hello)
-     (goodbye goodbye))))
+     (goodbye goodbye))
+   'huh))
 
 (defvar representer
   (lambda (tactics state)
@@ -43,5 +44,6 @@
 
 (chat "hello")
 (chat "goodbye")
+(chat "foobar")
 
 (finalize)
