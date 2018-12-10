@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>yo</title>
+</head>
+<body>
+  <div id="app">
+    <div v-for="entry in entries">
+      <span>{{ entry.owner }}</span>:
+      <span>{{ entry.text }}</span>
+    </div>
+    <input type="text" v-model="text" @keypress.enter="send"/>
+    <button @click="send">say</button>
+  </div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+const app = new Vue({
+  el: '#app',
+  data: {
+    entries: [],
+    text: '',
+    context: null
+  },
+  methods: {
+    async send() {
+      await this.chat(this.text);
+      this.text = '';
+    },
+    async chat(text) {
+      this.entries.push({
+        owner: 'you',
+        text
+      });
+      const res = await axios.post('/chat', {
+        text,
+        context: this.context
+      });
+      if (res.data.state === "ok") {
+        console.log(res.data);
+        this.entries.push({
+          owner: 'bot',
+          text: res.data.text
+        });
+        this.context = res.data.context;
+      } else {
+        console.error(res.data);
+      }
+    }
+  },
+  async beforeMount() {
+    this.chat('#enter#');
+  }
+});
+</script>
+</body>
+</html>
