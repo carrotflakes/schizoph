@@ -29,6 +29,7 @@
         collect (list tactics 1))))
 
 (defmethod next-context ((policy simple-policy)
+                         (intent t)
                          (context simple-context)
                          (tactics t)
                          (state state))

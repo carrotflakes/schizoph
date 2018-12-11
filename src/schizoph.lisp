@@ -52,12 +52,12 @@
             (cadar intent-tactics-score-list)))))
 
 (defun apply-tactics (state)
-  (with-slots (persona tactics output context next-context) state
+  (with-slots (persona intent tactics output context next-context) state
     (with-slots (policy representer) persona
       (setf output
             (funcall representer tactics state))
       (setf next-context
-            (schizoph.policy:next-context policy context tactics state)))))
+            (schizoph.policy:next-context policy intent context tactics state)))))
 
 
 (defun respond (persona input context)

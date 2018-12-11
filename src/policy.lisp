@@ -21,7 +21,7 @@
 
 (defgeneric think (policy intent context state))
 
-(defgeneric next-context (policy context tactics state))
+(defgeneric next-context (policy intent context tactics state))
 
 (defgeneric serialize (context))
 

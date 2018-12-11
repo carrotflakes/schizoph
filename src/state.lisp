@@ -6,6 +6,7 @@
            :input
            :intent-score-list
            :intent-tactics-score-list
+           :intent
            :tactics
            :output
            :context
@@ -25,6 +26,7 @@
   input
   intent-score-list
   intent-tactics-score-list
+  intent
   tactics
   output
   context

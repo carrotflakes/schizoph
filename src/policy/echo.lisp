@@ -19,6 +19,7 @@
   `((intent 1)))
 
 (defmethod next-context ((policy echo)
+                         (intent t)
                          (context context)
                          (tactics t)
                          (state state))
