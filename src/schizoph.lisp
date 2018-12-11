@@ -26,12 +26,12 @@
       (setf intent-score-list (sort intent-score-list #'> :key #'second)))))
 
 (defun plan (state)
-  (with-slots (persona intent-score-list intent-tactics-score-list) state
+  (with-slots (persona context intent-score-list intent-tactics-score-list) state
     (with-slots (policy) persona
       (setf intent-tactics-score-list
             (loop
               for (intent score-1) in intent-score-list
-              for tactics-score-list = (think policy intent state)
+              for tactics-score-list = (think policy intent context state)
               append (loop
                        for (tactics score-2) in tactics-score-list
                        collect (list intent tactics (* score-1 score-2)))))
@@ -39,7 +39,7 @@
       (setf intent-tactics-score-list
             (append intent-tactics-score-list
                     (loop
-                       for (tactics score) in (think policy :after state)
+                       for (tactics score) in (think policy :after context state)
                        collect (list :after tactics score))))
 
       (setf intent-tactics-score-list

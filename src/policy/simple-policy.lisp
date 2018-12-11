@@ -20,7 +20,7 @@
 (defmethod make-context ((policy simple-policy))
   (make-instance 'simple-context))
 
-(defmethod think ((policy simple-policy) (intent t) (state state))
+(defmethod think ((policy simple-policy) (intent t) (context t) (state state))
   (if (eq intent :after)
       `((,(slot-value policy 'default-tactics) 0.1))
       (loop
