@@ -16,4 +16,4 @@
   (loop
     for (text intent) in (slot-value understander 'pairs)
     when (string= text input)
-    collect (list intent 1)))
+    collect (cons intent 1)))

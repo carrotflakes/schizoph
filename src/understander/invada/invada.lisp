@@ -144,7 +144,7 @@
                                (number score)
                                (function (funcall score matched)))))
                   (when (< 0 score)
-                    (push (list (if (functionp intent)
+                    (push (cons (if (functionp intent)
                                     (funcall intent matched)
                                     intent)
                                 score)

@@ -22,8 +22,11 @@
 (defun interpret (state)
   (with-slots (persona intent-score-list input) state
     (with-slots (understander) persona
-      (setf intent-score-list (understand understander input state))
-      (setf intent-score-list (sort intent-score-list #'> :key #'second)))))
+      (setf intent-score-list
+            (loop
+              with alist = (understand understander input state)
+              for (intent . score) in (sort alist #'> :key #'cdr)
+              collect (list intent score))))))
 
 (defun plan (state)
   (with-slots (persona context intent-score-list intent-tactics-score-list) state
@@ -31,15 +34,15 @@
       (setf intent-tactics-score-list
             (loop
               for (intent score-1) in intent-score-list
-              for tactics-score-list = (think policy intent context state)
+              for tactics-score-alist = (think policy intent context state)
               append (loop
-                       for (tactics score-2) in tactics-score-list
+                       for (tactics . score-2) in tactics-score-alist
                        collect (list intent tactics (* score-1 score-2)))))
 
       (setf intent-tactics-score-list
             (append intent-tactics-score-list
                     (loop
-                       for (tactics score) in (think policy :after context state)
+                       for (tactics . score) in (think policy :after context state)
                        collect (list :after tactics score))))
 
       (setf intent-tactics-score-list

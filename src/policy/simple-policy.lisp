@@ -22,11 +22,11 @@
 
 (defmethod think ((policy simple-policy) (intent t) (context t) (state state))
   (if (eq intent :after)
-      `((,(slot-value policy 'default-tactics) 0.1))
+      `((,(slot-value policy 'default-tactics) . 0.1))
       (loop
         for (intent* tactics) in (slot-value policy 'pairs)
         when (equal intent intent*)
-        collect (list tactics 1))))
+        collect (cons tactics 1))))
 
 (defmethod next-context ((policy simple-policy)
                          (intent t)

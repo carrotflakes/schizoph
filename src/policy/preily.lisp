@@ -29,7 +29,7 @@
 (defmethod think ((policy preily) (intent t) (context t) (state state))
   (with-slots (world) policy
     (solve-all world
-               (?tactics ?score)
+               (?tactics . ?score)
                `(think ,intent ,context ?tactics ?score))))
 
 (defmethod next-context ((policy preily)

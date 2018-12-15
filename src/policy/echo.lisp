@@ -16,7 +16,7 @@
   (make-instance 'context))
 
 (defmethod think ((policy echo) (intent t) (context t) (state state))
-  `((intent 1)))
+  `((intent . 1)))
 
 (defmethod next-context ((policy echo)
                          (intent t)
