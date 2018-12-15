@@ -51,8 +51,8 @@
       (when (null intent-tactics-score-list)
         (error "No tactics"))
 
-      (setf (state-tactics state)
-            (cadar intent-tactics-score-list)))))
+      (setf (state-intent state) (caar intent-tactics-score-list))
+      (setf (state-tactics state) (cadar intent-tactics-score-list)))))
 
 (defun apply-tactics (state)
   (with-slots (persona intent tactics output context next-context) state

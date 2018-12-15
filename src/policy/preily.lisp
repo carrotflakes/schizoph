@@ -22,15 +22,15 @@
 (defmethod make-context ((policy preily))
   (with-slots (world) policy
     (make-instance 'preily-context
-                   :ctx (solve-1 world
-                                 ?ctx
-                                 '(initial-context ?ctx)))))
+                   :ctx (with-world (world)
+                          (solve-1 ?ctx
+                                   '(initial-context ?ctx))))))
 
 (defmethod think ((policy preily) (intent t) (context t) (state state))
   (with-slots (world) policy
-    (solve-all world
-               (?tactics . ?score)
-               `(think ,intent ,context ?tactics ?score))))
+    (with-world (world)
+      (solve-all (?tactics . ?score)
+                 `(think ,intent ,context ?tactics ?score)))))
 
 (defmethod next-context ((policy preily)
                          (intent t)
@@ -40,9 +40,9 @@
   (with-slots (world) policy
     (with-slots (ctx) context
       (let ((next-ctx
-              (solve-1 world
-                       ?ctx
-                       `(next-context ,intent ,ctx ,tactics ?ctx))))
+              (with-world (world)
+                (solve-1 ?ctx
+                         `(next-context ,intent ,ctx ,tactics ?ctx)))))
         (unless next-ctx
           (error "solve next-context failed"))
         (make-instance 'preily-context

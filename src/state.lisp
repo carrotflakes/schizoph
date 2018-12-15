@@ -15,6 +15,7 @@
            :state-input
            :state-intent-score-list
            :state-intent-tactics-score-list
+           :state-intent
            :state-tactics
            :state-output
            :state-context
