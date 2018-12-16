@@ -53,7 +53,7 @@
 
 (add-macro builder
            "果物"
-           (:or "りんご" "みかん" "ぶどう"))
+           '(:or "りんご" "みかん" "ぶどう"))
 
 (defvar invada (build builder))
 

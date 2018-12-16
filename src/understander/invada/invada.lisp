@@ -16,7 +16,7 @@
   macros
   patterns)
 
-(defun %add-macro (invada-builder macro-head body)
+(defun add-macro (invada-builder macro-head body)
   (push (list (if (stringp macro-head)
                   (parse-macro-head macro-head)
                   macro-head)
@@ -25,22 +25,13 @@
                   body))
         (invada-builder-macros invada-builder)))
 
-(defun %add-pattern (invada-builder pattern score intent)
+(defun add-pattern (invada-builder pattern score intent)
   (push (list (if (stringp pattern)
                   (parse-body pattern)
                   pattern)
               score
               intent)
         (invada-builder-patterns invada-builder)))
-
-(defmacro add-macro (invada-builder macro-head body)
-  `(%add-macro ,invada-builder ',macro-head ',body))
-
-(defmacro add-pattern (invada-builder pattern score intent)
-  `(%add-pattern ,invada-builder
-                 ',pattern
-                 ,score
-                 ,intent))
 
 
 (defclass invada (understander)
