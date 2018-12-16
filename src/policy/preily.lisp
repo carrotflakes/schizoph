@@ -28,9 +28,10 @@
 
 (defmethod think ((policy preily) (intent t) (context t) (state state))
   (with-slots (world) policy
-    (with-world (world)
-      (solve-all (?tactics . ?score)
-                 `(think ,intent ,context ?tactics ?score)))))
+    (with-slots (ctx) context
+      (with-world (world)
+        (solve-all (?tactics . ?score)
+                   `(think ,intent ,ctx ?tactics ?score))))))
 
 (defmethod next-context ((policy preily)
                          (intent t)
