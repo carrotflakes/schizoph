@@ -74,7 +74,8 @@
                                    for arg in prepared-args
                                    for param in (cdar macro)
                                    collect (list (list param) arg))
-                                 bindings)))))))))))
+                                 bindings)))))
+                (error "not found: ~a" ast)))))))
     (f body macros)))
 
 (defun parse (pattern string resolved)
