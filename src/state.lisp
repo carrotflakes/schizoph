@@ -1,33 +1,62 @@
 (defpackage schizoph.state
   (:use :cl)
-  (:export :state
+  (:export :interpretation
+           :make-interpretation
+           :intent
+           :entities
+           :score
+           :interpretation-intent
+           :interpretation-entities
+           :interpretation-score
+           :tactics
+           :make-tactics
+           :tactics-interpretation
+           :tactics-intent
+           :tactics-entities
+           :tactics-score
+           :tactics-combined-score
+           :state
            :make-state
            :persona
            :input
-           :intent-score-list
-           :intent-tactics-score-list
-           :intent
+           :interpretations
+           :tactics-list
            :tactics
            :output
            :context
            :next-context
            :state-persona
            :state-input
-           :state-intent-score-list
-           :state-intent-tactics-score-list
-           :state-intent
+           :state-interpretations
+           :state-tactics-list
+           :state-interpretation
            :state-tactics
            :state-output
            :state-context
            :state-next-context))
 (in-package :schizoph.state)
 
+(defstruct interpretation
+  intent
+  entities
+  score)
+
+(defstruct tactics
+  interpretation
+  intent
+  entities
+  score)
+
+(defun tactics-combined-score (tactics)
+  (* (interpretation-score (tactics-interpretation tactics))
+     (tactics-score tactics)))
+
 (defstruct state
   persona
   input
-  intent-score-list
-  intent-tactics-score-list
-  intent
+  interpretations
+  tactics-list
+  interpretation
   tactics
   output
   context

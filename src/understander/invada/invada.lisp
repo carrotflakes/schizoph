@@ -2,6 +2,8 @@
   (:use :cl
         :schizoph.understander
         :schizoph.invada.parser)
+  (:import-from :schizoph.state
+                :make-interpretation)
   (:import-from :optima
                 :ematch)
   (:export :make-invada-builder
@@ -136,9 +138,8 @@
                                (number score)
                                (function (funcall score matched)))))
                   (when (< 0 score)
-                    (push (cons (if (functionp intent)
-                                    (funcall intent matched)
-                                    intent)
-                                score)
+                    (push (make-interpretation :intent intent
+                                               :entities matched
+                                               :score score)
                           results)))))
     finally (return results)))

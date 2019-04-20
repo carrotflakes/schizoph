@@ -1,37 +1,40 @@
 (defpackage schizoph.simple-policy
   (:use :cl
         :schizoph.policy)
+  (:import-from :schizoph.state
+                :interpretation-intent
+                :interpretation-entities
+                :make-tactics)
   (:export :simple-policy
            :make-simple-policy
            :make-context))
 (in-package :schizoph.simple-policy)
 
 (defclass simple-policy (policy)
-  ((pairs :initarg :pairs)
-   (default-tactics :initarg :default-tactics)))
+  ((pairs :initarg :pairs)))
 (defclass simple-context (context)
   ())
 
-(defun make-simple-policy (pairs default-tactics)
+(defun make-simple-policy (pairs)
   (make-instance 'simple-policy
-                 :pairs pairs
-                 :default-tactics default-tactics))
+                 :pairs pairs))
 
 (defmethod make-context ((policy simple-policy))
   (make-instance 'simple-context))
 
-(defmethod think ((policy simple-policy) (intent t) (context t) (state state))
-  (if (eq intent :after)
-      `((,(slot-value policy 'default-tactics) . 0.1))
-      (loop
-        for (intent* tactics) in (slot-value policy 'pairs)
-        when (equal intent intent*)
-        collect (cons tactics 1))))
+(defmethod think ((policy simple-policy) (interpretation t) (context t) (state state))
+  (loop
+    with intent = (interpretation-intent interpretation)
+    for (intent* tactics-intent) in (slot-value policy 'pairs)
+    when (equal intent intent*)
+    collect (make-tactics :interpretation interpretation
+                          :intent intent*
+                          :entities (interpretation-entities interpretation)
+                          :score 1)))
 
 (defmethod next-context ((policy simple-policy)
-                         (intent t)
-                         (context simple-context)
                          (tactics t)
+                         (context simple-context)
                          (state state))
   context)
 

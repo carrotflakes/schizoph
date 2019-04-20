@@ -2,6 +2,10 @@
   (:use :cl
         :schizoph.policy
         :preil)
+  (:import-from :schizoph.state
+                :interpretation-intent
+                :interpretation-entities
+                :make-tactics)
   (:export :preily
            :make-preily
            :make-context
@@ -26,24 +30,33 @@
                           (solve-1 ?ctx
                                    '(initial-context ?ctx))))))
 
-(defmethod think ((policy preily) (intent t) (context t) (state state))
+(defmethod think ((policy preily) (interpretation t) (context t) (state state))
+  ; entities is not supported yet
   (with-slots (world) policy
     (with-slots (ctx) context
-      (with-world (world)
-        (solve-all (?tactics . ?score)
-                   `(think ,intent ,ctx ?tactics ?score))))))
+      (let ((intent (interpretation-intent interpretation)))
+        (with-world (world)
+          (loop
+            for (intent . score) = (solve-all (?intent . ?score)
+                                              `(think ,intent ,ctx ?intent ?score))
+            collect (make-tactics :interpretation interpretation
+                                  :intent intent
+                                  :entities '()
+                                  :score score)))))))
 
 (defmethod next-context ((policy preily)
-                         (intent t)
-                         (context preily-context)
                          (tactics t)
+                         (context preily-context)
                          (state state))
   (with-slots (world) policy
     (with-slots (ctx) context
-      (let ((next-ctx
+      (let* ((interpretation (tactics-interpretation tactics))
+             (interpretation-intent (interpretation-intent interpretation))
+             (tactics-intent (tactics-intent tactics))
+             (next-ctx
               (with-world (world)
                 (solve-1 ?ctx
-                         `(next-context ,intent ,ctx ,tactics ?ctx)))))
+                         `(next-context ,interpretation-intent ,ctx ,tactics-intent ?ctx)))))
         (unless next-ctx
           (error "solve next-context failed"))
         (make-instance 'preily-context

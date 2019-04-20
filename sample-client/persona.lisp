@@ -12,19 +12,17 @@
 
 (defvar understander
   (make-simple-understander
-   '(("hello" hello)
-     ("goodbye" goodbye))))
+   '(("hello" hello () 1)
+     ("goodbye" goodbye () 1))))
 
 (defvar policy
   (make-simple-policy
    '((hello hello)
-     (goodbye goodbye))
-   'huh))
+     (goodbye goodbye)
+     (:default huh))))
 
 (defvar representer
-  (lambda (tactics state)
-    (declare (ignore state))
-    (format nil "~a" tactics)))
+  #'schizoph.debug-representer:debug-representer)
 
 (defvar persona
   (make-persona

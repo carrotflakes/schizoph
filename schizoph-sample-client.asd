@@ -9,6 +9,7 @@
                "jonathan"
                "schizoph-simple-understander"
                "schizoph-simple-policy"
+               "schizoph-debug-representer"
                "schizoph")
   :components ((:module "sample-client"
                 :components

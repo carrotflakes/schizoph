@@ -28,28 +28,20 @@
 
 (defvar builder (make-invada-builder))
 
-(defmacro intent (names &body body)
-  (let ((bindings (loop
-                    for name in names
-                    collect `(,name (cdr (assoc ',name matches :test #'string-equal))))))
-    `(lambda (matches)
-       (let ,bindings
-         ,@body))))
-
 (add-pattern builder
              "こんにち(は|わ)"
              1
-             '(greeting こんにちは))
+             'greeting)
 
 (add-pattern builder
              "$果物@fruit が好きです"
              1
-             (intent (fruit) `(like me ,fruit)))
+             '(like fruit))
 
 (add-pattern builder
              "* $果物@fruit *"
              0.5
-             (intent (fruit) `(keyword ,fruit)))
+             '(keyword fruit))
 
 (add-macro builder
            "果物"

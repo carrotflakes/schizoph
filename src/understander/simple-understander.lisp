@@ -1,12 +1,14 @@
 (defpackage schizoph.simple-understander
   (:use :cl
         :schizoph.understander)
+  (:import-from :schizoph.state
+                :make-interpretation)
   (:export :simple-understander
            :make-simple-understander))
 (in-package :schizoph.simple-understander)
 
 (defclass simple-understander (understander)
-  ((pairs :initarg :pairs)))
+  ((pairs :initarg :pairs))) ; ((text intent entities score) ...)
 
 (defun make-simple-understander (pairs)
   (make-instance 'simple-understander
@@ -14,6 +16,8 @@
 
 (defmethod understand ((understander simple-understander) (input t) (state state))
   (loop
-    for (text intent) in (slot-value understander 'pairs)
+    for (text intent entities score) in (slot-value understander 'pairs)
     when (string= text input)
-    collect (cons intent 1)))
+    collect (make-interpretation :intent intent
+                                 :entities entities
+                                 :score score)))
