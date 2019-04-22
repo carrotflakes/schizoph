@@ -2,16 +2,15 @@
   This file is a part of schizoph project.
 |#
 
-(defsystem "schizoph-flagon-policy"
+(defsystem "schizoph-preily"
   :version "0.1.0"
   :author "carrotflakes"
   :license "LLGPL"
   :depends-on ("schizoph-policy"
-               "flagon"
-               "jonathan")
+               "preil")
   :components ((:module "src/policy"
                 :components
-                ((:file "flagon-policy"))))
-  :description "policy using flagon"
+                ((:file "preily"))))
+  :description "policy using preil"
   ;:in-order-to ((test-op (test-op "schizoph-test")))
   )
