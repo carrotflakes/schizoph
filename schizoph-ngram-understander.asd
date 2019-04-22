@@ -6,7 +6,7 @@
   :version "0.1.0"
   :author "carrotflakes"
   :license "LLGPL"
-  :depends-on ("schizoph-understander")
+  :depends-on ("schizoph")
   :components ((:module "src/understander"
                 :components
                 ((:file "ngram-understander"))))

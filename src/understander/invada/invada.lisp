@@ -1,6 +1,5 @@
 (defpackage schizoph.invada
   (:use :cl
-        :schizoph.understander
         :schizoph.invada.parser)
   (:import-from :schizoph.state
                 :make-interpretation)
@@ -9,8 +8,7 @@
   (:export :make-invada-builder
            :add-macro
            :add-pattern
-           :build
-           :invada))
+           :build))
 (in-package :schizoph.invada)
 
 
@@ -34,21 +32,6 @@
               score
               intent)
         (invada-builder-patterns invada-builder)))
-
-
-(defclass invada (understander)
-  ((patterns :initarg :patterns)))
-
-(defun build (invada-builder)
-  (let* ((macros (invada-builder-macros invada-builder))
-         (patterns
-           (loop
-             for (pattern score intent) in (invada-builder-patterns invada-builder)
-             collect (list (body-prepare pattern macros)
-                           score
-                           intent))))
-    (make-instance 'invada
-                   :patterns patterns)))
 
 (defun body-prepare (body macros)
   (labels
@@ -128,18 +111,27 @@
                                   matched))
                       branches)))))))
 
-(defmethod understand ((understander invada) (input t) (state state))
-  (loop
-    with results = '()
-    for (pattern score intent) in (slot-value understander 'patterns)
-    do (parse pattern input
-              (lambda (matched)
-                (let ((score (etypecase score
-                               (number score)
-                               (function (funcall score matched)))))
-                  (when (< 0 score)
-                    (push (make-interpretation :intent intent
-                                               :entities matched
-                                               :score score)
-                          results)))))
-    finally (return results)))
+(defun build (invada-builder)
+  (let* ((macros (invada-builder-macros invada-builder))
+         (patterns
+           (loop
+             for (pattern score intent) in (invada-builder-patterns invada-builder)
+             collect (list (body-prepare pattern macros)
+                           score
+                           intent))))
+    (lambda (input state)
+      (declare (ignore state))
+      (loop
+        with results = '()
+        for (pattern score intent) in patterns
+        do (parse pattern input
+                  (lambda (matched)
+                    (let ((score (etypecase score
+                                   (number score)
+                                   (function (funcall score matched)))))
+                      (when (< 0 score)
+                        (push (make-interpretation :intent intent
+                                                   :entities matched
+                                                   :score score)
+                              results)))))
+        finally (return results)))))

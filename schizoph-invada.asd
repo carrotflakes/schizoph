@@ -6,7 +6,7 @@
   :version "0.1.0"
   :author "carrotflakes"
   :license "LLGPL"
-  :depends-on ("schizoph-understander"
+  :depends-on ("schizoph"
                "snaky"
                "optima")
   :components ((:module "src/understander/invada"

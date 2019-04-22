@@ -7,7 +7,7 @@
 (use-package :schizoph.simple-understander)
 (use-package :schizoph.flagon-policy)
 
-(defvar understander
+(defvar understand
   (make-simple-understander
    '(("hello" hello () 1)
      ("goodbye" goodbye () 1)
@@ -17,27 +17,31 @@
      ("Thanks" thanks () 1)
      ("goodbye" goodbye () 1))))
 
-(defvar policy
-  (make-flagon-policy
-   '((hello "" hello "" "")
-     (goodbye "" goodbye "" "")
-     (i-like "" ok "" "foodUserLike:$food")
-     (tell-me-food-i-like "foodUserLike:$food" food-you-like "food:$food" "")
-     (tell-me-food-i-like "-foodUserLike" i-dont-know "" "")
-     (thanks "" no-problem "" "")
-     (:default "" default "" "+default"))
-   "first"))
+(multiple-value-bind (think first-context next-context)
+    (make-flagon-policy
+     '((hello "" hello "" "")
+       (goodbye "" goodbye "" "")
+       (i-like "" ok "" "foodUserLike:$food")
+       (tell-me-food-i-like "foodUserLike:$food" food-you-like "food:$food" "")
+       (tell-me-food-i-like "-foodUserLike" i-dont-know "" "")
+       (thanks "" no-problem "" "")
+       (:default "" default "" "+default"))
+     "first")
+  (defvar think think)
+  (defvar first-context first-context)
+  (defvar next-context next-context))
 
-(defvar representer
-  #'schizoph.debug-representer:debug-representer)
+(defvar represent
+  schizoph.debug-representer:debug-representer)
 
 (defvar persona
   (make-persona
-   :understander understander
-   :policy policy
-   :representer representer))
+   :understand understand
+   :think think
+   :next-context next-context
+   :represent represent))
 
-(defvar context (make-context policy))
+(defvar context (funcall first-context))
 
 (defun chat (text)
   (multiple-value-bind

@@ -3,46 +3,37 @@
         :schizoph.state)
   (:import-from :schizoph.persona
                 :make-persona
-                :understander
-                :policy
-                :representer)
-  (:import-from :schizoph.understander
-                :understand)
-  (:import-from :schizoph.policy
+                :understand
                 :think
-                :serialize
-                :deserialize)
+                :represent)
   (:export :make-persona
-           :respond
-           :serialize
-           :deserialize))
+           :respond))
 (in-package :schizoph)
 
 
 (defun interpret (state)
   (with-slots (persona interpretations input) state
-    (with-slots (understander) persona
+    (with-slots (understand) persona
       (setf interpretations
-            (sort (understand understander input state) #'>
+            (sort (funcall understand input state) #'>
                   :key #'interpretation-score))))
   (values))
 
 (defun plan (state)
   (with-slots (persona context interpretations tactics-list) state
-    (with-slots (policy) persona
+    (with-slots (think) persona
       (setf tactics-list
             (loop
               for interpretation in interpretations
-              append (think policy interpretation context state)))
+              append (funcall think interpretation context state)))
 
       (setf tactics-list
             (append tactics-list
-                    (think policy
-                           (make-interpretation :intent :default
-                                                :entities '()
-                                                :score 0)
-                           context
-                           state)))
+                    (funcall think (make-interpretation :intent :default
+                                                        :entities '()
+                                                        :score 0)
+                             context
+                             state)))
 
       (setf tactics-list
             (sort tactics-list #'> :key #'tactics-combined-score))
@@ -55,11 +46,12 @@
 
 (defun apply-tactics (state)
   (with-slots (persona interpretation tactics output context next-context) state
-    (with-slots (policy representer) persona
+    (with-slots (represent) persona
       (setf output
-            (funcall representer tactics state)
+            (funcall represent tactics state)
             next-context
-            (schizoph.policy:next-context policy tactics context state)))))
+            (funcall (slot-value persona 'schizoph.persona:next-context)
+                     tactics context state)))))
 
 
 (defun respond (persona input context)

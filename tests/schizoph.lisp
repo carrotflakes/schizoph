@@ -10,29 +10,33 @@
 
 (plan nil)
 
-(defvar understander
+(defvar understand
   (make-simple-understander
    '(("hello" :hello () 1)
      ("goodbye" :goodbye () 1))))
 
-(defvar policy
-  (make-simple-policy
-   '((:hello :hello)
-     (:goodbye :goodbye)
-     (:default :default))))
+(multiple-value-bind (think first-context next-context)
+    (make-simple-policy
+     '((:hello :hello)
+       (:goodbye :goodbye)
+       (:default :default)))
+  (defvar think think)
+  (defvar first-context first-context)
+  (defvar next-context next-context))
 
-(defvar representer
+(defvar represent
   (lambda (tactics state)
     (declare (ignore state))
     (write-to-string tactics)))
 
 (defvar persona
   (make-persona
-   :understander understander
-   :policy policy
-   :representer representer))
+   :understand understand
+   :think think
+   :next-context next-context
+   :represent represent))
 
-(defvar context (make-context policy))
+(defvar context (funcall first-context))
 
 (defun chat (text)
   (multiple-value-bind

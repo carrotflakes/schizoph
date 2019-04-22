@@ -1,20 +1,9 @@
 (defpackage schizoph.ngram-understander
-  (:use :cl
-        :schizoph.understander)
+  (:use :cl)
   (:import-from :schizoph.state
                 :make-interpretation)
-  (:export :ngram-understander
-           :make-ngram-understander))
+  (:export :make-ngram-understander))
 (in-package :schizoph.ngram-understander)
-
-(defclass ngram-understander (understander)
-  ((pairs :initarg :pairs) ; ((text intent score) ...)
-   (threshold :initarg :threshold :initform 0.0001)))
-
-(defun make-ngram-understander (pairs &optional (threshold 0.0001))
-  (make-instance 'ngram-understander
-                 :pairs pairs
-                 :threshold threshold))
 
 (defun ngram (string n)
   (when (= n 1)
@@ -44,13 +33,15 @@
                          (max (length (union set1 set2 :test #'string=)) 0))))
      (length ngram-set1)))
 
-(defmethod understand ((understander ngram-understander) (input t) (state state))
-  (loop
-    with threshold = (slot-value understander 'threshold)
-    with ngram-set = (ngram-set input 3)
-    for (text intent base-score) in (slot-value understander 'pairs)
-    for score = (* (score ngram-set (ngram-set text 3)) base-score)
-    when (<= threshold score)
-    collect (make-interpretation :intent intent
-                                 :entities '()
-                                 :score (float score))))
+;; paris: ((text intent score) ...)
+(defun make-ngram-understander (pairs &optional (threshold 0.0001))
+  (lambda (input state)
+    (declare (ignore state))
+    (loop
+      with ngram-set = (ngram-set input 3)
+      for (text intent base-score) in pairs
+      for score = (* (score ngram-set (ngram-set text 3)) base-score)
+      when (<= threshold score)
+      collect (make-interpretation :intent intent
+                                   :entities '()
+                                   :score (float score)))))

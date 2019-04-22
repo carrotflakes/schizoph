@@ -1,32 +1,9 @@
-(defpackage schizoph.policy
-  (:use :cl
-        :schizoph.state)
-  (:export :policy
-           :context
-           :make-context
-           :think
-           :next-context
-           :serialize
+(defpackage schizoph.serialize
+  (:use :cl)
+  (:export :serialize
            :deserialize
-           :state
            :safe-read-from-string))
-(in-package :schizoph.policy)
-
-(defclass policy ()
-  ())
-(defclass context ()
-  ())
-
-(defgeneric make-context (policy))
-
-(defgeneric think (policy interpretation context state))
-
-(defgeneric next-context (policy tactics context state))
-
-(defgeneric serialize (context))
-
-(defgeneric deserialize (policy string))
-
+(in-package :schizoph.serialize)
 
 (defvar safe-read-from-string-blacklist
   '(#\# #\: #\|))
@@ -50,3 +27,9 @@
                          safe-read-from-string fail))))
             (read-from-string s)))
         fail)))
+
+(defun serialize (context)
+  (write-to-string context))
+
+(defun deserialize (context)
+  (safe-read-from-string context))

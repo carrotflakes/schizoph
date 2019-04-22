@@ -1,7 +1,8 @@
 (defpackage schizoph.sample-client.persona
   (:use :cl
         :schizoph.simple-understander
-        :schizoph)
+        :schizoph
+        :schizoph.serialize)
   (:import-from :schizoph.simple-policy
                 :make-simple-policy)
   (:export :make-context
@@ -10,33 +11,37 @@
 (in-package :schizoph.sample-client.persona)
 
 
-(defvar understander
+(defvar understand
   (make-simple-understander
    '(("hello" hello () 1)
      ("goodbye" goodbye () 1))))
 
-(defvar policy
+(multiple-value-bind (think first-context next-context)
   (make-simple-policy
    '((hello hello)
      (goodbye goodbye)
-     (:default huh))))
+     (:default huh)))
+  (defvar think think)
+  (defvar first-context first-context)
+  (defvar next-context next-context))
 
-(defvar representer
-  #'schizoph.debug-representer:debug-representer)
+(defvar represent
+  schizoph.debug-representer:debug-representer)
 
 (defvar persona
   (make-persona
-   :understander understander
-   :policy policy
-   :representer representer))
+   :understand understand
+   :think think
+   :next-context next-context
+   :represent represent))
 
 
 (defun make-context ()
-  (schizoph.simple-policy:make-context policy))
+  (funcall first-context))
 
 (defun chat (text raw-context)
   (let ((context (if raw-context
-                     (deserialize policy raw-context)
+                     (deserialize raw-context)
                      (make-context))))
     (multiple-value-bind
           (response next-context state)

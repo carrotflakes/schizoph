@@ -10,7 +10,8 @@
                "schizoph-simple-understander"
                "schizoph-simple-policy"
                "schizoph-debug-representer"
-               "schizoph")
+               "schizoph"
+               "schizoph-serialize")
   :components ((:module "sample-client"
                 :components
                 ((:file "main" :depends-on ("persona"))

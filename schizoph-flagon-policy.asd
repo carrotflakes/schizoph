@@ -6,7 +6,7 @@
   :version "0.1.0"
   :author "carrotflakes"
   :license "LLGPL"
-  :depends-on ("schizoph-policy"
+  :depends-on ("schizoph"
                "flagon"
                "jonathan")
   :components ((:module "src/policy"

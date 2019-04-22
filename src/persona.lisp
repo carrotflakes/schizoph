@@ -3,12 +3,14 @@
   (:export :persona
            :make-persona
            :persona-p
-           :understander
-           :policy
-           :representer))
+           :understand
+           :think
+           :next-context
+           :represent))
 (in-package :schizoph.persona)
 
 (defstruct persona
-  understander
-  policy
-  representer)
+  understand
+  think
+  next-context
+  represent)

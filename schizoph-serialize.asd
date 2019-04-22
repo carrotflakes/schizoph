@@ -2,14 +2,14 @@
   This file is a part of schizoph project.
 |#
 
-(defsystem "schizoph-simple-policy"
+(defsystem "schizoph-serialize"
   :version "0.1.0"
   :author "carrotflakes"
   :license "LLGPL"
-  :depends-on ("schizoph")
-  :components ((:module "src/policy"
+  :depends-on ()
+  :components ((:module "src"
                 :components
-                ((:file "simple-policy"))))
-  :description "simple policy"
+                ((:file "serialize"))))
+  :description "schizoph context serialize and deserialize"
   ;:in-order-to ((test-op (test-op "schizoph-test")))
   )
