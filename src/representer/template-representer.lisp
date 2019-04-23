@@ -67,4 +67,4 @@
              (template-representer-error (c)
                (declare (ignore c)) nil))
         finally (return (or best-string
-                            (render default-template entities)))))))
+                            (render parsed-default-template entities)))))))
