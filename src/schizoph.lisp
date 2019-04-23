@@ -6,9 +6,13 @@
                 :understand
                 :think
                 :represent)
-  (:export :make-persona
+  (:export :*default-intent*
+           :make-persona
            :respond))
 (in-package :schizoph)
+
+
+(defvar *default-intent* :default)
 
 
 (defun interpret (state)
@@ -29,7 +33,7 @@
 
       (setf tactics-list
             (append tactics-list
-                    (funcall think (make-interpretation :intent :default
+                    (funcall think (make-interpretation :intent *default-intent*
                                                         :entities '()
                                                         :score 0)
                              context
