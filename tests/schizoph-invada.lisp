@@ -24,12 +24,18 @@
 (f "*@name")
 (f "$hoge")
 (f "$hoge $fuga $piyo(foo, bar)@yo")
+(f "(($hoge |)fuga|)")
 
 
 (defvar builder (make-invada-builder))
 
 (add-pattern builder
              "こんにち(は|わ)"
+             1
+             'greeting)
+
+(add-pattern builder
+             "あ(あ|)"
              1
              'greeting)
 
@@ -49,9 +55,14 @@
 
 (defvar invada (build builder))
 
-(print (schizoph.understander:understand
+(print (funcall
         invada
         "りんごが好きです"
+        (schizoph.state::make-state)))
+
+(print (funcall
+        invada
+        "あ"
         (schizoph.state::make-state)))
 
 (finalize)

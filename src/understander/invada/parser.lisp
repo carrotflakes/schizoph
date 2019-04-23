@@ -20,9 +20,9 @@
 
 (defrule %or
     (or (@ (and (ret :or)
-                %and
+                (or %and (ret :nop))
                 (+ (and ws "|" ws
-                        %and))))
+                        (or %and (ret :nop))))))
         %and))
 
 (defrule %and

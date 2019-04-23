@@ -39,7 +39,7 @@
          (ematch ast
            ((type string)
             ast)
-           ((or :* :+)
+           ((or :* :+ :nop)
             ast)
            ((list* :and tail)
             (list* :and (mapcar (lambda (ast) (f ast bindings)) tail)))
@@ -109,6 +109,9 @@
                             (cdr bind-starts)
                             (cons (cons name (subseq string (car bind-starts) i))
                                   matched))
+                      branches))
+               (:nop
+                (push (list thunk i bind-starts matched)
                       branches)))))))
 
 (defun build (invada-builder)
