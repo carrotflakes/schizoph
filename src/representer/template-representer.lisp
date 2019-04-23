@@ -46,16 +46,25 @@
                      (:string
                       value)))))
 
-;; pairs: ((intent template) ...)
+;; pairs: ((intent template score) ...)
 (defun make-template-representer (pairs &optional (default-template "default"))
   (setf pairs
         (loop
-          for (intent template) in pairs
-          collect (cons intent (parse-template* template))))
+          for (intent template score) in pairs
+          collect (list intent (parse-template* template) (or score 1))))
   (let ((parsed-default-template (parse-template* default-template)))
     (lambda (tactics state
              &aux (intent (tactics-intent tactics)) (entities (tactics-entities tactics)))
       (declare (ignore state))
-      (render (or (cdr (assoc intent pairs :test #'equal))
-                  parsed-default-template)
-              entities))))
+      (loop
+        with best-string = nil
+        with best-score = -1
+        for (intent* template score) in pairs
+        when (and (equal intent intent*) (< best-score score))
+        do (handler-case
+               (setf best-string (render template entities)
+                     best-score score)
+             (template-representer-error (c)
+               (declare (ignore c)) nil))
+        finally (return (or best-string
+                            (render default-template entities)))))))
