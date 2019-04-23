@@ -9,14 +9,15 @@
   (:export :make-flagon-policy))
 (in-package :schizoph.flagon-policy)
 
-;; pairs: ((interpretation-intent pattern tactics-intent tactics-entities updater) ...)
+;; pairs: ((interpretation-intent pattern tactics-intent tactics-entities updater score) ...)
 (defun make-flagon-policy (pairs &optional default-state)
   (setf pairs (loop
                 for (interpretation-intent
                      pattern
                      tactics-intent
                      tactics-entities
-                     updater) in pairs
+                     updater
+                     score) in pairs
                 collect (list interpretation-intent
                               (if (stringp pattern)
                                   (flagon:pattern pattern)
@@ -27,7 +28,8 @@
                                   tactics-entities)
                               (if (stringp updater)
                                   (flagon:updater updater)
-                                  updater)))
+                                  updater)
+                              (or score 1)))
         default-state (if (stringp default-state)
                           (flagon:state default-state)
                           default-state))
@@ -40,7 +42,8 @@
             pattern
             tactics-intent
             tactics-entities-pattern
-            updater) in pairs
+            updater
+            score) in pairs
        when (equal interpretation-intent (interpretation-intent interpretation))
        append (multiple-value-bind (succ bindings)
                   (flagon:match pattern context)
@@ -52,7 +55,7 @@
                       (list (make-tactics :interpretation interpretation
                                           :intent tactics-intent
                                           :entities tactics-entities
-                                          :score 1))))))))
+                                          :score score))))))))
    (lambda () default-state)
    (lambda (tactics context state)
      (declare (ignore state))
@@ -62,7 +65,8 @@
             pattern
             tactics-intent
             tactics-entities-pattern
-            updater) in pairs
+            updater
+            score) in pairs
        when (and (equal interpretation-intent (interpretation-intent interpretation))
                  (equal tactics-intent (tactics-intent tactics)))
        do (multiple-value-bind (succ bindings)
