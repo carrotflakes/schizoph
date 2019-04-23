@@ -9,6 +9,23 @@
   (:export :make-flagon-policy))
 (in-package :schizoph.flagon-policy)
 
+(defun flagon-construct (pattern state)
+  (let ((bindings ()))
+    (loop
+      for (sign key . value) in pattern
+      for variable = (flagon::variablep value)
+      do (ecase sign
+           (:plus
+            (if variable
+                (let ((pair (assoc variable state :test #'string=)))
+                  (if pair
+                      (push (cons key (cdr pair)) bindings)
+                      (return-from flagon-construct (values nil nil))))
+                (push (cons key value) bindings)))
+           (:minus
+            nil)))
+    (values t bindings)))
+
 ;; pairs: ((interpretation-intent pattern tactics-intent tactics-entities updater score) ...)
 (defun make-flagon-policy (pairs &optional default-state)
   (setf pairs (loop
@@ -50,7 +67,7 @@
                 (when succ
                   (setf bindings (append bindings (interpretation-entities interpretation)))
                   (multiple-value-bind (succ tactics-entities)
-                      (flagon:match tactics-entities-pattern bindings)
+                      (flagon-construct tactics-entities-pattern bindings)
                     (when succ
                       (list (make-tactics :interpretation interpretation
                                           :intent tactics-intent
