@@ -33,15 +33,15 @@
                          (max (length (union set1 set2 :test #'string=)) 0))))
      (length ngram-set1)))
 
-;; paris: ((text intent score) ...)
+;; paris: ((text intent entities score) ...)
 (defun make-ngram-understander (pairs &optional (threshold 0.0001))
   (lambda (input state)
     (declare (ignore state))
     (loop
       with ngram-set = (ngram-set input 3)
-      for (text intent base-score) in pairs
-      for score = (* (score ngram-set (ngram-set text 3)) base-score)
+      for (text intent entities base-score) in pairs
+      for score = (* (score ngram-set (ngram-set text 3)) (or base-score 1))
       when (<= threshold score)
       collect (make-interpretation :intent intent
-                                   :entities '()
+                                   :entities entities
                                    :score (float score)))))
